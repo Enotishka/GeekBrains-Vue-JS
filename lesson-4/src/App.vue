@@ -1,42 +1,46 @@
 <template>
   <div id="app">
-    <CostsListComponent :costsList="displayedCostsList" @costs-list-add="isEdit = !isEdit" />
-    <PaginationComponent :itemsPerPage="costsPerPage" :itemsCount="costsList.length" @page-changed="firstDisplayedCostIndex = costsPerPage * ($event - 1)"/>
-    <EditCostsComponent v-if="isEdit" @add-cost="addCost(nextId++, $event.date, $event.description, $event.amount)" />
+    <CostsListComponent :costsList="getCosts(firstDisplayedCostIndex, costsPerPage)" @costs-list-add-cost="isEditCost = !isEditCost" @costs-list-add-category="isEditCategory = !isEditCategory"/>
+    <PaginationComponent :itemsPerPage="costsPerPage" :itemsCount="getCostsCount()" @page-changed="firstDisplayedCostIndex = costsPerPage * ($event - 1)"/>
+    <EditCostsComponent v-if="isEditCost" />
+    <AddCategoryComponent v-if="isEditCategory" />
   </div>
 
 </template>
 
 <script>
+import {mapActions, mapGetters} from 'vuex';
 import CostsListComponent from './components/CostsListComponent.vue';
 import EditCostsComponent from './components/EditCostsComponent.vue';
 import PaginationComponent from './components/PaginationComponent.vue';
+import AddCategoryComponent from './components/AddCategoryComponent.vue';
 
 export default {
   name: 'App',
   components: {
     CostsListComponent,
     EditCostsComponent,
-    PaginationComponent
+    PaginationComponent,
+    AddCategoryComponent
   },
   data() {
     return {
       costsList: [],
       nextId: 0,
-      isEdit: false,
+      isEditCost: false,
+      isEditCategory: false,
       firstDisplayedCostIndex: 0,
       costsPerPage: 5,
     };
   },
   computed: {
-    displayedCostsList() {
-      return this.costsList.slice(this.firstDisplayedCostIndex, this.firstDisplayedCostIndex + this.costsPerPage);
-    }
+    ...mapGetters(['getCosts', 'getCostsCount']),
   },
   methods: {
-    addCost(id, date, category, value) {
-      this.costsList.push({id, date, category, value});
-    }
+    ...mapActions(['fetchCosts']),
+  },
+  created() {
+    this.fetchCosts();
   },
 }
 </script>
