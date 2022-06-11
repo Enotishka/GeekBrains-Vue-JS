@@ -1,6 +1,9 @@
 <template>
   <div class="costs-list">
-    <button class="add-new-cost" @click="addNewCost">ADD NEW COST+</button>
+    <div class="buttons">
+      <button class="button" @click.prevent="addNewCost">ADD NEW COST+</button>
+      <button class="button" @click.prevent="addNewCategory">ADD NEW CATEGORY+</button>
+    </div>  
     <div class="table-row table-header">
       <div>#</div>
       <div>Date</div>
@@ -22,7 +25,10 @@ export default {
   props: ["costsList"],
   methods: {
     addNewCost() {
-      this.$emit('costs-list-add')
+      this.$emit('costs-list-add-cost');
+    },
+    addNewCategory() {
+      this.$emit('costs-list-add-category')
     }
   }
 }
@@ -36,9 +42,13 @@ export default {
   height: 250px;
 }
 
-.add-new-cost {
+.buttons {
+  display: flex;
+  gap: 25px;
+}
+
+.button {
   cursor: pointer;
-  align-self: start;
   background-color: rgb(7, 179, 15);
   padding: 10px;
 }
