@@ -19,11 +19,25 @@ import { mapActions, mapGetters } from 'vuex';
 
 export default {
   name: 'EditCostsComponent',
+  props: {
+    initCategory: {
+      required: false,
+      default: ""
+    },
+    initAmount: {
+      required: false,
+      default: ""
+    }
+  },
   data() {
     return {
-     category: "",
-     amount: "",
-     date: "",
+      category: this.initCategory,
+      amount: this.initAmount,
+      date: new Date().toLocaleDateString('ru-RU', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+      }),
     };
   },
   computed: {
