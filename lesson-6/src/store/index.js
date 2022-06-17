@@ -33,11 +33,14 @@ export default new Vuex.Store({
       );
       state.categoryList.push(...categories);
     },
-    setCosts(state, costs) {
-      state.costs = costs;
-    },
-    addCost(state, cost) {
-      state.costs.push(cost);
+    addCosts(state, costs) {
+      if (!Array.isArray(costs)) {
+        costs = [costs];
+      }
+      costs = costs.filter(
+        ({ id }) => !state.costs.some((cost) => cost.id === id)
+      );
+      state.costs.push(...costs);
     },
   },
   actions: {
@@ -75,7 +78,7 @@ export default new Vuex.Store({
           ]);
         }, 1000);
       }).then((res) => {
-        commit("setCosts", res);
+        commit("addCosts", res);
       });
     },
     addNewCost({ commit, state }, cost) {
@@ -85,7 +88,7 @@ export default new Vuex.Store({
           .reduce((max, id) => Math.max(max, id), 0);
         cost.id = maxId + 1;
       }
-      commit("addCost", cost);
+      commit("addCosts", cost);
     },
     addNewCategories({ commit }, categories) {
       commit("addCategories", categories);
