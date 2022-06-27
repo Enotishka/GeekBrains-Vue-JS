@@ -6,7 +6,9 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     categoryList: [],
+    isCategoriesListFetched: false,
     costs: [],
+    isCostsListFetched: false,
   },
   getters: {
     getCategoryList(state) {
@@ -37,15 +39,29 @@ export default new Vuex.Store({
       if (!Array.isArray(costs)) {
         costs = [costs];
       }
-      costs = costs.filter(
-        ({ id }) => !state.costs.some((cost) => cost.id === id)
-      );
-      state.costs.push(...costs);
+      costs.forEach((cost) => {
+        const existing = state.costs.find((c) => c.id === cost.id);
+        if (!existing) {
+          state.costs.push(cost);
+        } else {
+          Object.assign(existing, cost);
+        }
+      });
+    },
+    removeCosts(state, costIds) {
+      if (!Array.isArray(costIds)) {
+        costIds = [costIds];
+      }
+      state.costs = state.costs.filter(({ id }) => !costIds.includes(id));
     },
   },
   actions: {
-    fetchCategories({ commit }) {
+    fetchCategories({ commit, state }) {
       return new Promise((resolve) => {
+        if (state.isCategoriesListFetched) {
+          resolve([]);
+          return;
+        }
         setTimeout(() => {
           resolve(["Food", "Transport", "Education", "Entertainment"]);
         }, 1000);
@@ -53,8 +69,12 @@ export default new Vuex.Store({
         commit("addCategories", res);
       });
     },
-    fetchCosts({ commit }) {
+    fetchCosts({ commit, state }) {
       return new Promise((resolve) => {
+        if (state.isCostsListFetched) {
+          resolve([]);
+          return;
+        }
         setTimeout(() => {
           resolve([
             {
@@ -82,7 +102,7 @@ export default new Vuex.Store({
       });
     },
     addNewCost({ commit, state }, cost) {
-      if (!cost.id) {
+      if (!cost.id && cost.id !== 0) {
         const maxId = state.costs
           .map((cost) => cost.id)
           .reduce((max, id) => Math.max(max, id), 0);
