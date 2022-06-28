@@ -1,13 +1,23 @@
 <template>
   <div>
     <form class="payment-form">
-      <select v-model="category">
+      <select class="category" v-model="category">
         <option v-for="option in getCategoryList" :value="option" :key="option">
           {{ option }}
         </option>
       </select>
-      <input placeholder="Payment amount" type="text" v-model="amount" />
-      <input placeholder="Payment date" type="text" v-model="date" />
+      <input
+        class="amount"
+        placeholder="Payment amount"
+        type="text"
+        v-model="amount"
+      />
+      <input
+        class="date"
+        placeholder="Payment date"
+        type="text"
+        v-model="date"
+      />
       <button class="add" @click.prevent="add">SAVE</button>
     </form>
   </div>
