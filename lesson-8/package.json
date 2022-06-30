@@ -1,5 +1,5 @@
 {
-  "name": "lesson-7",
+  "name": "lesson-8",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -26,6 +26,7 @@
     "jest-environment-jsdom": "^28.1.1",
     "vue": "^2.6.14",
     "vue-router": "^3.5.4",
+    "vuetify": "^2.6.7",
     "vuex": "^3.6.2"
   },
   "devDependencies": {
