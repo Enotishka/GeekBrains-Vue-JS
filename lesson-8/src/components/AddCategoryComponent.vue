@@ -1,38 +1,25 @@
 <template>
-  <div class="add-new-category">
-    <input placeholder="Category name" type="text" v-model="category">
-    <button class="add" @click.prevent="add">ADD</button>
-  </div>
+  <v-card class="text-left pa-8">
+    <v-text-field v-model="category" label="Сategory name"></v-text-field>
+    <v-btn color="teal" dark @click="add">ADD</v-btn>
+  </v-card>
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapActions } from "vuex";
 
 export default {
-  name: 'AddCategoryComponent',
+  name: "AddCategoryComponent",
   data() {
     return {
-     category: "",
+      category: "",
     };
   },
   methods: {
-     ...mapActions(['addNewCategories']),
+    ...mapActions(["addNewCategories"]),
     add() {
       this.addNewCategories(this.category);
-    }
-  }
-}
+    },
+  },
+};
 </script>
-
-<style scoped>
-.add-new-category {
-  display: flex;
-  margin-top: 25px;
-}
-
-.add {
-  cursor: pointer;
-  background-color: rgb(7, 179, 15);
-  padding: 5px;
-}
-</style>

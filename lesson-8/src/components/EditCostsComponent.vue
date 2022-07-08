@@ -1,30 +1,33 @@
 <template>
-  <div>
-    <form class="payment-form">
-      <select class="category" v-model="category">
-        <option v-for="option in getCategoryList" :value="option" :key="option">
-          {{ option }}
-        </option>
-      </select>
-      <input
-        class="amount"
-        placeholder="Payment amount"
-        type="text"
-        v-model="amount"
-      />
-      <input
-        class="date"
-        placeholder="Payment date"
-        type="text"
-        v-model="date"
-      />
-      <button class="add" @click.prevent="add">SAVE</button>
-    </form>
-  </div>
+  <v-card class="text-left pa-8">
+    <v-select
+      v-model="category"
+      label="Category"
+      :items="getCategoryList()"
+    ></v-select>
+    <v-text-field v-model.number="amount" label="Value"></v-text-field>
+    <v-menu v-model="isDatePickerVisible">
+      <template v-slot:activator="{ on, attrs }">
+        <v-text-field
+          :value="date"
+          label="Date"
+          readonly
+          v-on="on"
+          v-bind="attrs"
+        ></v-text-field>
+      </template>
+      <v-date-picker
+        v-model="isoDate"
+        @input="isDatePickerVisible = false"
+      ></v-date-picker>
+    </v-menu>
+    <v-btn color="teal" dark @click="add">SAVE</v-btn>
+  </v-card>
 </template>
 
 <script>
 import { mapActions, mapGetters } from "vuex";
+import moment from "moment";
 
 export default {
   name: "EditCostsComponent",
@@ -51,20 +54,20 @@ export default {
       id: this.initId,
       category: this.initCategory,
       amount: this.initAmount,
-      date:
-        this.initDate ||
-        new Date().toLocaleDateString("ru-RU", {
-          year: "numeric",
-          month: "2-digit",
-          day: "2-digit",
-        }),
+      isoDate: this.initDate
+        ? this.convertDateCustomToISO(this.initDate)
+        : moment().format("YYYY-MM-DD"),
+      isDatePickerVisible: false,
     };
   },
   computed: {
     ...mapGetters(["getCategoryList"]),
+    date() {
+      return this.convertDateISOtoCustom(this.isoDate);
+    },
   },
   methods: {
-    ...mapActions(["addNewCost", "fetchCategories"]),
+    ...mapActions(["addNewCost"]),
     add() {
       this.addNewCost({
         id: this.id,
@@ -73,23 +76,12 @@ export default {
         date: this.date,
       });
     },
-  },
-  created() {
-    this.fetchCategories();
+    convertDateISOtoCustom(date) {
+      return moment(date, "YYYY-MM-DD").format("DD.MM.YYYY");
+    },
+    convertDateCustomToISO(date) {
+      return moment(date, "DD.MM.YYYY").format("YYYY-MM-DD");
+    },
   },
 };
 </script>
-
-<style scoped>
-.payment-form {
-  display: flex;
-  flex-direction: column;
-  width: 200px;
-}
-
-.add {
-  cursor: pointer;
-  background-color: rgb(7, 179, 15);
-  padding: 10px;
-}
-</style>

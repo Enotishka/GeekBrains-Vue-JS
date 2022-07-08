@@ -1,17 +1,15 @@
 <template>
-  <div>
-    <EditCostsComponent :initCategory="category" :initAmount="amount" />
-  </div>
+  <EditCostsComponent :initCategory="category" :initAmount="amount" />
 </template>
 
 <script>
-import EditCostsComponent from '../components/EditCostsComponent.vue';
+import EditCostsComponent from "../components/EditCostsComponent.vue";
 
 export default {
-  name: 'PaymentPage',
+  name: "PaymentPage",
   components: {
     EditCostsComponent,
   },
-  props: ['category', 'amount'],
-}
+  props: ["category", "amount"],
+};
 </script>
