@@ -1,27 +1,28 @@
 <template>
-  <div class="costs-list">
-    <div class="buttons">
-      <button class="button" @click.prevent="addNewCost">ADD NEW COST+</button>
-      <button class="button" @click.prevent="addNewCategory">
-        ADD NEW CATEGORY+
-      </button>
-    </div>
-    <div class="table-row table-header">
-      <div>#</div>
-      <div>Date</div>
-      <div>Category</div>
-      <div>Value</div>
-    </div>
-    <div class="table-row" v-for="item in costsList" :key="item.id">
-      <div>{{ item.id }}</div>
-      <div>{{ item.date }}</div>
-      <div>{{ item.category }}</div>
-      <div>{{ item.value }}</div>
-      <div>
-        <button @click.prevent="menu(item, $event)">...</button>
-      </div>
-    </div>
-  </div>
+  <v-container>
+    <v-row class="text-h6">
+      <v-col :cols="2">#</v-col>
+      <v-col :cols="3">Date</v-col>
+      <v-col :cols="4">Category</v-col>
+      <v-col :cols="2">Value</v-col>
+    </v-row>
+    <v-row
+      v-for="item in costsList"
+      :key="item.id"
+      align="center"
+      justify="center"
+    >
+      <v-col :cols="2">{{ item.id }}</v-col>
+      <v-col :cols="3">{{ item.date }}</v-col>
+      <v-col :cols="4">{{ item.category }}</v-col>
+      <v-col :cols="2">{{ item.value }}</v-col>
+      <v-col :cols="1">
+        <v-btn icon @click="menu(item, $event)">
+          <v-icon>mdi-dots-vertical</v-icon>
+        </v-btn>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
@@ -29,54 +30,19 @@ export default {
   name: "CostsListComponent",
   props: ["costsList"],
   methods: {
-    addNewCost() {
-      this.$modal.show("EditCostsComponent", { header: "Edit cost" });
-    },
-    addNewCategory() {
-      this.$modal.show("AddCategoryComponent", { header: "Add category" });
-    },
     menu(item, event) {
-      const elem = event.target;
-      const elemPosition = {
-        x: elem.offsetLeft + elem.clientWidth / 2,
-        y: elem.offsetTop + elem.clientHeight,
-      };
+      const bodyRect = document.body.getBoundingClientRect();
+      const elemRect = event.target.getBoundingClientRect();
+
       this.$contextMenu.show("CostMenuComponent", {
         target: item,
-        elemPosition,
+        position: {
+          x: elemRect.left - bodyRect.left,
+          y: elemRect.bottom - bodyRect.top,
+        },
       });
     },
   },
 };
 </script>
-
-<style scoped>
-.costs-list {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  height: 250px;
-}
-
-.buttons {
-  display: flex;
-  gap: 25px;
-}
-
-.button {
-  cursor: pointer;
-  background-color: rgb(7, 179, 15);
-  padding: 10px;
-}
-
-.table-row {
-  display: grid;
-  grid-template-columns: repeat(5, 200px);
-  border-bottom: 1px rgba(133, 133, 133, 0.233) solid;
-}
-
-.table-header {
-  font-weight: bold;
-}
-</style>
 

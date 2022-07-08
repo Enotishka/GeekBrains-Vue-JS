@@ -12,7 +12,14 @@ export default new Vuex.Store({
   },
   getters: {
     getCategoryList(state) {
-      return state.categoryList;
+      return function () {
+        return state.categoryList;
+      };
+    },
+    getAllCosts(state) {
+      return function () {
+        return state.costs;
+      };
     },
     getCosts(state) {
       return function (firstIndex, count) {
@@ -63,6 +70,7 @@ export default new Vuex.Store({
           return;
         }
         setTimeout(() => {
+          state.isCategoriesListFetched = true;
           resolve(["Food", "Transport", "Education", "Entertainment"]);
         }, 1000);
       }).then((res) => {
@@ -76,6 +84,7 @@ export default new Vuex.Store({
           return;
         }
         setTimeout(() => {
+          state.isCostsListFetched = true;
           resolve([
             {
               id: 0,

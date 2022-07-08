@@ -1,26 +1,30 @@
 <template>
-  <div id="app">
-    <header class="header">
-      <router-link :to="{ name: 'HomePage' }">Home</router-link>
-      <router-link :to="{ name: 'PaymentPage' }">Add payment</router-link>
-    </header>
-    <router-view />
-    <transition name="fade">
+  <v-app>
+    <v-app-bar app flat>
+      <v-btn plain :ripple="false" :to="{ name: 'HomePage' }">Home</v-btn>
+      <v-btn plain :ripple="false" :to="{ name: 'PaymentPage' }"
+        >Add payment</v-btn
+      >
+    </v-app-bar>
+    <v-main>
+      <router-view />
       <ModalWindow
         v-if="modalWindow"
         :modalWindow="modalWindow"
         :modalWindowSettings="modalWindowSettings"
       />
-    </transition>
-    <ContextMenuWindow
-      v-if="contextMenuWindow"
-      :contextMenuWindow="contextMenuWindow"
-      :contextMenuSettings="contextMenuSettings"
-    />
-  </div>
+      <ContextMenuWindow
+        v-if="contextMenuWindow"
+        :contextMenuWindow="contextMenuWindow"
+        :contextMenuSettings="contextMenuSettings"
+      />
+    </v-main>
+  </v-app>
 </template>
 
 <script>
+import { mapActions } from "vuex";
+
 export default {
   name: "App",
   components: {
@@ -36,17 +40,18 @@ export default {
     };
   },
   methods: {
+    ...mapActions(["fetchCosts", "fetchCategories"]),
     onModalShow(settings) {
       this.modalWindow = settings.name;
       this.modalWindowSettings = settings;
     },
-    onContextMenuShow(settings) {
-      this.contextMenuWindow = settings.name;
-      this.contextMenuSettings = settings;
-    },
     onModalHide() {
       this.modalWindow = "";
       this.modalWindowSettings = {};
+    },
+    onContextMenuShow(settings) {
+      this.contextMenuWindow = settings.name;
+      this.contextMenuSettings = settings;
     },
     onContextMenuHide() {
       this.contextMenuWindow = "";
@@ -54,6 +59,9 @@ export default {
     },
   },
   mounted() {
+    this.fetchCosts();
+    this.fetchCategories();
+
     this.$modal.EventBus.$on("show", this.onModalShow);
     this.$modal.EventBus.$on("hide", this.onModalHide);
     this.$contextMenu.EventBus.$on("show", this.onContextMenuShow);
@@ -61,32 +69,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-  display: flex;
-  flex-direction: column;
-}
-
-.header {
-  display: flex;
-  gap: 20px;
-  align-self: center;
-}
-
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.3s;
-}
-
-.fade-enter,
-.fade-leave-to {
-  opacity: 0;
-}
-</style>
