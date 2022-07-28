@@ -1,7 +1,5 @@
 import Vue from "vue";
 import Router from "vue-router";
-import HomePage from "../pages/HomePage";
-import PaymentPage from "../pages/PaymentPage";
 
 Vue.use(Router);
 
@@ -11,12 +9,12 @@ export default new Router({
     {
       path: "/",
       name: "HomePage",
-      component: HomePage,
+      component: () => import("../pages/HomePage"),
     },
     {
       path: "/add/payment/:category?",
       name: "PaymentPage",
-      component: PaymentPage,
+      component: () => import("../pages/PaymentPage"),
       props: (route) => ({
         category: route.params.category,
         amount: route.query.value,

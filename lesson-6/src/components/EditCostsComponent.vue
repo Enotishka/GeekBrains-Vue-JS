@@ -6,57 +6,68 @@
           {{ option }}
         </option>
       </select>
-      <input placeholder="Payment amount" type="text" v-model="amount">
-      <input placeholder="Payment date" type="text" v-model="date">
-      <button class="add" @click.prevent="add">ADD+</button>
+      <input placeholder="Payment amount" type="text" v-model="amount" />
+      <input placeholder="Payment date" type="text" v-model="date" />
+      <button class="add" @click.prevent="add">SAVE</button>
     </form>
   </div>
-  
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex';
+import { mapActions, mapGetters } from "vuex";
 
 export default {
-  name: 'EditCostsComponent',
+  name: "EditCostsComponent",
   props: {
+    initId: {
+      required: false,
+      default: "",
+    },
     initCategory: {
       required: false,
-      default: ""
+      default: "",
     },
     initAmount: {
       required: false,
-      default: ""
-    }
+      default: "",
+    },
+    initDate: {
+      required: false,
+      default: "",
+    },
   },
   data() {
     return {
+      id: this.initId,
       category: this.initCategory,
       amount: this.initAmount,
-      date: new Date().toLocaleDateString('ru-RU', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-      }),
+      date:
+        this.initDate ||
+        new Date().toLocaleDateString("ru-RU", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+        }),
     };
   },
   computed: {
-    ...mapGetters(['getCategoryList'])
+    ...mapGetters(["getCategoryList"]),
   },
   methods: {
-    ...mapActions(['addNewCost', 'fetchCategories']), 
+    ...mapActions(["addNewCost", "fetchCategories"]),
     add() {
       this.addNewCost({
-        category: this.category, 
-        value: this.amount, 
-        date: this.date
+        id: this.id,
+        category: this.category,
+        value: this.amount,
+        date: this.date,
       });
-    }
+    },
   },
   created() {
     this.fetchCategories();
-  }
-}
+  },
+};
 </script>
 
 <style scoped>
@@ -64,7 +75,6 @@ export default {
   display: flex;
   flex-direction: column;
   width: 200px;
-  margin-top: 20px;
 }
 
 .add {
